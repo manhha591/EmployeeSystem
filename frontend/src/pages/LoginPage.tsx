@@ -1,5 +1,5 @@
 import { useState } from "react"
-import axios from "axios"
+import api from "../shared/api/axios"
 
 function LoginPage() {
   const [username, setUsername] = useState("")
@@ -11,7 +11,7 @@ function LoginPage() {
     setError("")
 
     try {
-      const res = await axios.post("/api/Auth/login", { username, password })
+      const res = await api.post("/Auth/login", { username, password })
       localStorage.setItem("accessToken", res.data.accessToken)
       localStorage.setItem("refreshToken", res.data.refreshToken)
       window.location.href = "/dashboard"
@@ -26,6 +26,8 @@ function LoginPage() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <input
+            id="username"
+            name="username"
             placeholder="Tên đăng nhập"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -34,6 +36,8 @@ function LoginPage() {
         </div>
         <div>
           <input
+            id="password"
+            name="password"
             type="password"
             placeholder="Mật khẩu"
             value={password}
