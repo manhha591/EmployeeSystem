@@ -89,8 +89,8 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-    var connStr = db.Database.GetConnectionString();
-    logger.LogInformation("Connection string: {ConnStr}", connStr);
+    var dbConnStr = db.Database.GetConnectionString();
+    logger.LogInformation("Connection string: {ConnStr}", dbConnStr);
     try
     {
         db.Database.Migrate();
