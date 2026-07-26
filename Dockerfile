@@ -3,4 +3,4 @@ RUN apt-get update && apt-get install -y libgssapi-krb5-2 && rm -rf /var/lib/apt
 WORKDIR /app
 COPY docker-publish/ .
 EXPOSE 8080
-ENTRYPOINT ["dotnet", "EmployeeManagement.API.dll"]
+CMD dotnet EmployeeManagement.API.dll --urls http://0.0.0.0:${PORT:-8080}
