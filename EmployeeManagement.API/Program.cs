@@ -26,8 +26,20 @@ builder.Services.AddControllers()
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
+var connStr = builder.Configuration.GetConnectionString("DefaultConnection");
+if (connStr != null && connStr.StartsWith("postgres"))
+{
+    var uri = new Uri(connStr);
+    var host = uri.Host;
+    var port = uri.Port > 0 ? uri.Port : 5432;
+    var db = uri.AbsolutePath.TrimStart('/');
+    var userInfo = uri.UserInfo.Split(':');
+    var username = userInfo[0];
+    var password = userInfo.Length > 1 ? userInfo[1] : "";
+    connStr = $"Host={host};Port={port};Database={db};Username={username};Password={password}";
+}
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connStr));
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
