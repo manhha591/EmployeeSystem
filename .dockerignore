@@ -1,6 +1,5 @@
 bin/
 obj/
-frontend/
 python/
 .git/
 .gitignore
