@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-admin}
+      POSTGRES_DB: employeemanagement
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  api:
+    image: ${DOCKER_USER:-youruser}/employee-api:latest
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=employeemanagement;Username=postgres;Password=${DB_PASSWORD:-admin};SSL Mode=Disable"
+      Jwt__Key: ${JWT_KEY:-ThisIsASecureKeyForEmployeeManagementSystem2026!}
+      Jwt__Issuer: EmployeeManagement.API
+      Jwt__Audience: EmployeeManagement.Client
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    image: ${DOCKER_USER:-youruser}/employee-frontend:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  pgdata:

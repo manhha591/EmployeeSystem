@@ -1,0 +1,29 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.log
+.DS_Store
+
+# Node
+node_modules/
+dist/
+
+# Python
+python/__pycache__/
+python/*.pyc
+python/*.egg-info/
+
+# Docker
+docker-publish/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+*.swp
