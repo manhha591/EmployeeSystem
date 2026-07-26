@@ -21,7 +21,9 @@ jobs:
 
       - run: dotnet build EmployeeManagement.API/EmployeeManagement.API.csproj -c Release --no-restore
 
-      - run: dotnet publish EmployeeManagement.API/EmployeeManagement.API.csproj -c Release -o publish --no-restore
+      - run: dotnet restore EmployeeManagement.API.Tests/EmployeeManagement.API.Tests.csproj
+
+      - run: dotnet test EmployeeManagement.API.Tests/EmployeeManagement.API.Tests.csproj -c Release --no-restore --verbosity normal
 
   frontend:
     name: Build Frontend
