@@ -3,6 +3,8 @@ using EmployeeManagement.API.Models;
 
 namespace EmployeeManagement.API.Data;
 
+// DbContext - cầu nối giữa code C# và database PostgreSQL
+// Mỗi DbSet tương ứng với 1 bảng trong DB
 public class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

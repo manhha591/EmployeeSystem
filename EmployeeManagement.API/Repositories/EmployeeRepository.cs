@@ -14,6 +14,7 @@ public class EmployeeRepository : IEmployeeRepository
         _context = context;
     }
 
+    // Lấy tất cả nhân viên (kèm thông tin phòng ban)
     public async Task<List<Employee>> GetAllAsync()
     {
         return await _context.Employees
@@ -21,12 +22,14 @@ public class EmployeeRepository : IEmployeeRepository
             .ToListAsync();
     }
 
+    // Lấy danh sách nhân viên phân trang kèm tìm kiếm, lọc theo phòng ban, sắp xếp
     public async Task<PagedResult<Employee>> GetPagedAsync(EmployeeFilterDto filter)
     {
         var query = _context.Employees
             .Include(e => e.Department)
             .AsQueryable();
 
+        // Lọc theo từ khoá tìm kiếm (tên, email, số điện thoại)
         if (!string.IsNullOrWhiteSpace(filter.Search))
         {
             var s = filter.Search.ToLower();
@@ -36,9 +39,11 @@ public class EmployeeRepository : IEmployeeRepository
                 (e.Phone != null && e.Phone.Contains(s)));
         }
 
+        // Lọc theo phòng ban
         if (filter.DepartmentId.HasValue)
             query = query.Where(e => e.DepartmentId == filter.DepartmentId.Value);
 
+        // Sắp xếp theo tên, lương hoặc email (tăng/giảm dần)
         query = (filter.SortBy?.ToLower()) switch
         {
             "name" => filter.SortDir == "desc"
@@ -68,6 +73,7 @@ public class EmployeeRepository : IEmployeeRepository
         };
     }
 
+    // Lấy một nhân viên theo ID (kèm thông tin phòng ban)
     public async Task<Employee?> GetByIdAsync(int id)
     {
         return await _context.Employees
@@ -75,6 +81,7 @@ public class EmployeeRepository : IEmployeeRepository
             .FirstOrDefaultAsync(e => e.Id == id);
     }
 
+    // Thêm nhân viên mới vào DB, sau đó truy vấn lại để lấy đầy đủ thông tin (kèm phòng ban)
     public async Task<Employee> CreateAsync(Employee employee)
     {
         _context.Employees.Add(employee);
@@ -85,12 +92,14 @@ public class EmployeeRepository : IEmployeeRepository
             .FirstAsync(e => e.Id == employee.Id);
     }
 
+    // Cập nhật thông tin nhân viên (đánh dấu entity đã thay đổi và lưu)
     public async Task UpdateAsync(Employee employee)
     {
         _context.Entry(employee).State = EntityState.Modified;
         await _context.SaveChangesAsync();
     }
 
+    // Xoá nhân viên theo ID (tìm trước, nếu tồn tại thì xoá)
     public async Task DeleteAsync(int id)
     {
         var employee = await _context.Employees.FindAsync(id);
@@ -101,11 +110,13 @@ public class EmployeeRepository : IEmployeeRepository
         }
     }
 
+    // Kiểm tra nhân viên có tồn tại theo ID không
     public async Task<bool> ExistsAsync(int id)
     {
         return await _context.Employees.AnyAsync(e => e.Id == id);
     }
 
+    // Kiểm tra phòng ban có tồn tại theo ID không
     public async Task<bool> DepartmentExistsAsync(int departmentId)
     {
         return await _context.Departments.AnyAsync(d => d.Id == departmentId);

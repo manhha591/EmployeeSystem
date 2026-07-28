@@ -1,19 +1,25 @@
 import { useState } from "react"
 import api from "../shared/api/axios"
 
+// Trang đăng nhập
 function LoginPage() {
+  // State quản lý form đăng nhập
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
 
+  // Xử lý khi submit form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
 
     try {
+      // Gọi API đăng nhập (baseURL đã được cấu hình trong axios.ts)
       const res = await api.post("/Auth/login", { username, password })
+      // Lưu token vào localStorage để dùng cho các request sau
       localStorage.setItem("accessToken", res.data.accessToken)
       localStorage.setItem("refreshToken", res.data.refreshToken)
+      // Chuyển hướng về dashboard
       window.location.href = "/dashboard"
     } catch {
       setError("Sai tài khoản hoặc mật khẩu")

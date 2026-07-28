@@ -18,12 +18,14 @@ public class EmployeeService : IEmployeeService
         _env = env;
     }
 
+    // Lấy tất cả nhân viên (không phân trang)
     public async Task<List<EmployeeDto>> GetAllAsync()
     {
         var employees = await _repo.GetAllAsync();
         return _mapper.Map<List<EmployeeDto>>(employees);
     }
 
+    // Lấy danh sách nhân viên có phân trang, tìm kiếm, lọc, sắp xếp
     public async Task<PagedResult<EmployeeDto>> GetPagedAsync(EmployeeFilterDto filter)
     {
         var paged = await _repo.GetPagedAsync(filter);
@@ -36,12 +38,14 @@ public class EmployeeService : IEmployeeService
         };
     }
 
+    // Lấy một nhân viên theo ID
     public async Task<EmployeeDto?> GetByIdAsync(int id)
     {
         var employee = await _repo.GetByIdAsync(id);
         return employee == null ? null : _mapper.Map<EmployeeDto>(employee);
     }
 
+    // Tạo mới nhân viên (kiểm tra phòng ban tồn tại trước khi tạo)
     public async Task<EmployeeDto> CreateAsync(CreateEmployeeDto dto)
     {
         var departmentExists = await _repo.DepartmentExistsAsync(dto.DepartmentId);
@@ -53,6 +57,7 @@ public class EmployeeService : IEmployeeService
         return _mapper.Map<EmployeeDto>(created);
     }
 
+    // Cập nhật thông tin nhân viên (kiểm tra phòng ban tồn tại trước khi cập nhật)
     public async Task UpdateAsync(UpdateEmployeeDto dto)
     {
         var departmentExists = await _repo.DepartmentExistsAsync(dto.DepartmentId);
@@ -63,11 +68,13 @@ public class EmployeeService : IEmployeeService
         await _repo.UpdateAsync(employee);
     }
 
+    // Xoá một nhân viên theo ID
     public async Task DeleteAsync(int id)
     {
         await _repo.DeleteAsync(id);
     }
 
+    // Upload ảnh đại diện cho nhân viên — lưu file vào thư mục uploads/avatars và cập nhật đường dẫn vào DB
     public async Task<string?> UploadAvatarAsync(int id, IFormFile file)
     {
         var employee = await _repo.GetByIdAsync(id);

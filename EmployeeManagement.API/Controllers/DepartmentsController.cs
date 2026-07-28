@@ -5,8 +5,10 @@ using EmployeeManagement.API.Services;
 
 namespace EmployeeManagement.API.Controllers;
 
-[Authorize]
-[ApiController]
+// Controller xử lý các request API cho Department
+// Route: api/departments
+[Authorize]           // Yêu cầu xác thực JWT
+[ApiController]       // Tự động validation model, binding, ...
 [Route("api/[controller]")]
 public class DepartmentsController : ControllerBase
 {
@@ -17,6 +19,7 @@ public class DepartmentsController : ControllerBase
         _service = service;
     }
 
+    // GET /api/departments - Lấy danh sách tất cả phòng ban
     [HttpGet]
     public async Task<ActionResult<List<DepartmentDto>>> GetAll()
     {
@@ -24,6 +27,7 @@ public class DepartmentsController : ControllerBase
         return Ok(departments);
     }
 
+    // GET /api/departments/{id} - Lấy 1 phòng ban theo Id
     [HttpGet("{id}")]
     public async Task<ActionResult<DepartmentDto>> GetById(int id)
     {
@@ -35,6 +39,7 @@ public class DepartmentsController : ControllerBase
         return Ok(department);
     }
 
+    // POST /api/departments - Tạo mới phòng ban
     [HttpPost]
     public async Task<ActionResult<DepartmentDto>> Create(CreateDepartmentDto dto)
     {
@@ -42,6 +47,7 @@ public class DepartmentsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
+    // PUT /api/departments/{id} - Cập nhật phòng ban
     [HttpPut("{id}")]
     public async Task<ActionResult> Update(int id, UpdateDepartmentDto dto)
     {
@@ -56,6 +62,7 @@ public class DepartmentsController : ControllerBase
         return NoContent();
     }
 
+    // DELETE /api/departments/{id} - Xóa phòng ban
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(int id)
     {

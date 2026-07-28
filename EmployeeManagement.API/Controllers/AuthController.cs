@@ -23,9 +23,11 @@ public class AuthController : ControllerBase
         _context = context;
     }
 
+    // POST: api/auth/login — Xác thực người dùng, trả về access token + refresh token
     [HttpPost("login")]
     public async Task<ActionResult> Login(LoginRequest request)
     {
+        // Kiểm tra tên đăng nhập và mật khẩu (cứng cho demo)
         if (request.Username != "admin" || request.Password != "admin123")
             return Unauthorized("Invalid credentials");
 
@@ -40,6 +42,7 @@ public class AuthController : ControllerBase
         });
     }
 
+    // POST: api/auth/refresh — Lấy access token mới bằng refresh token
     [HttpPost("refresh")]
     public async Task<ActionResult> Refresh(RefreshRequest request)
     {
@@ -72,6 +75,7 @@ public class AuthController : ControllerBase
         });
     }
 
+    // POST: api/auth/revoke — Thu hồi refresh token (đăng xuất)
     [HttpPost("revoke")]
     public async Task<ActionResult> Revoke(RefreshRequest request)
     {
@@ -87,6 +91,7 @@ public class AuthController : ControllerBase
         return NoContent();
     }
 
+    // Tạo JWT access token (hết hạn sau 15 phút)
     private string GenerateAccessToken(string username)
     {
         var key = new SymmetricSecurityKey(
@@ -110,6 +115,7 @@ public class AuthController : ControllerBase
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
+    // Tạo refresh token ngẫu nhiên (hết hạn sau 7 ngày), lưu vào DB
     private async Task<RefreshToken> GenerateRefreshToken(string username)
     {
         var refreshToken = new RefreshToken

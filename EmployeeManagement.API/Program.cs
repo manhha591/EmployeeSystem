@@ -9,8 +9,10 @@ using EmployeeManagement.API.DTOs;
 using EmployeeManagement.API;
 using Microsoft.OpenApi;
 
+// Tạo ứng dụng web với cấu hình mặc định (appsettings.json, env vars, ...)
 var builder = WebApplication.CreateBuilder(args);
 
+// Cho phép tất cả domain gọi API (CORS mở hoàn toàn)
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -21,11 +23,13 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Đăng ký Controllers, bỏ qua vòng lặp tham chiếu khi serialize JSON
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
+// Đọc connection string từ config, nếu là dạng URI (postgres://...) thì parse sang key-value
 var connStr = builder.Configuration.GetConnectionString("DefaultConnection");
 if (connStr != null && connStr.StartsWith("postgres"))
 {
@@ -38,25 +42,29 @@ if (connStr != null && connStr.StartsWith("postgres"))
     var password = userInfo.Length > 1 ? userInfo[1] : "";
     connStr = $"Host={host};Port={port};Database={db};Username={username};Password={password}";
 }
+// Đăng ký DbContext với PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connStr));
+// Đăng ký các Repository và Service để Inject (DI)
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+// Đăng ký AutoMapper với MappingProfile (chuyển Entity <-> DTO)
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+// Cấu hình xác thực JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
+            ValidateIssuer = true,               // Kiểm tra nhà phát hành token
+            ValidateAudience = true,             // Kiểm tra đối tượng nhận token
+            ValidateLifetime = true,             // Kiểm tra thời hạn token
+            ValidateIssuerSigningKey = true,     // Kiểm tra chữ ký
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
@@ -64,9 +72,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// Đăng ký Swagger (tài liệu API)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
+    // Thêm nút "Authorize" trên Swagger UI để nhập JWT
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header. Example: \"Bearer {token}\"",
@@ -83,8 +93,10 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+// Xây dựng ứng dụng
 var app = builder.Build();
 
+// Tự động chạy migration khi khởi động (tạo bảng nếu chưa có)
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -103,6 +115,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+// Middleware pipeline (thứ tự xử lý request)
 if (app.Environment.IsDevelopment())
 {
     app.UseMiddleware<SwaggerSecurityFix>();
@@ -117,11 +130,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
-app.UseStaticFiles();
+app.UseStaticFiles();        // Phục vụ file tĩnh (avatar, ...)
 
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuthentication();     // Xác thực: kiểm tra token
+app.UseAuthorization();      // Phân quyền: kiểm tra role
 
-app.MapControllers();
+app.MapControllers();        // Ánh xạ request vào Controllers
 
 app.Run();
