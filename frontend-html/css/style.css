@@ -1,0 +1,376 @@
+/* ===== Reset & Base ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #f9fafb;
+  color: #1f2937;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* ===== Navbar ===== */
+.navbar {
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar .brand {
+  font-weight: 700;
+  font-size: 18px;
+  color: #1677ff;
+}
+
+.navbar .nav-links {
+  display: flex;
+  gap: 4px;
+}
+
+.navbar .nav-links a {
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #4b5563;
+  transition: background 0.15s, color 0.15s;
+}
+
+.navbar .nav-links a:hover {
+  background: #eef4ff;
+  color: #1677ff;
+}
+
+.navbar .nav-links a.active {
+  background: #1677ff;
+  color: #fff;
+}
+
+/* ===== Layout ===== */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.page-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* ===== Cards (Dashboard) ===== */
+.stats-grid {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  flex: 1;
+  min-width: 200px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.stat-card .label {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+.stat-card .value {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+/* ===== Table ===== */
+.table-wrapper {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #f3f4f6;
+}
+
+th, td {
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 14px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+tbody tr:hover {
+  background: #fafbff;
+}
+
+th {
+  font-weight: 600;
+  color: #374151;
+}
+
+/* ===== Buttons ===== */
+.btn {
+  display: inline-block;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+
+.btn-primary { background: #1677ff; color: #fff; }
+.btn-primary:hover { background: #0f63d8; }
+
+.btn-success { background: #52c41a; color: #fff; }
+.btn-success:hover { background: #44a815; }
+
+.btn-danger { background: #ff4d4f; color: #fff; }
+.btn-danger:hover { background: #e23c3e; }
+
+.btn-ghost { background: transparent; color: #4b5563; border: 1px solid #d1d5db; }
+.btn-ghost:hover { background: #f3f4f6; }
+
+.btn-sm { padding: 4px 10px; font-size: 13px; }
+
+/* ===== Form ===== */
+.form-group {
+  margin-bottom: 14px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #374151;
+}
+
+.form-control {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.form-control:focus {
+  border-color: #1677ff;
+}
+
+select.form-control {
+  appearance: none;
+  background: #fff;
+}
+
+/* ===== Toolbar (search + add button) ===== */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.toolbar .left {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* ===== Pagination ===== */
+.pagination {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 12px 16px;
+}
+
+.pagination button {
+  min-width: 32px;
+  height: 32px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  border-radius: 6px;
+  font-size: 13px;
+  transition: background 0.15s;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: #eef4ff;
+}
+
+.pagination button.active {
+  background: #1677ff;
+  color: #fff;
+  border-color: #1677ff;
+}
+
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ===== Modal ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 480px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.modal h3 {
+  font-size: 17px;
+  margin-bottom: 18px;
+}
+
+.modal .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* ===== Login ===== */
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1677ff 0%, #0f4fa8 100%);
+}
+
+.login-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 36px 32px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.login-box h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #111827;
+}
+
+.login-error {
+  background: #fff1f0;
+  color: #cf1322;
+  border: 1px solid #ffccc7;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+  margin-bottom: 14px;
+  display: none;
+}
+
+/* ===== Avatar ===== */
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-lg {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* ===== Misc ===== */
+.alert {
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 16px;
+  display: none;
+}
+
+.alert.show { display: block; }
+
+.alert-success {
+  background: #f6ffed;
+  border: 1px solid #b7eb8f;
+  color: #389e0d;
+}
+
+.alert-error {
+  background: #fff1f0;
+  border: 1px solid #ffccc7;
+  color: #cf1322;
+}
+
+.loading {
+  color: #6b7280;
+  font-size: 14px;
+  padding: 20px;
+  text-align: center;
+}
+
+.text-right { text-align: right; }
+.mt-4 { margin-top: 16px; }
+
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
+  .navbar { padding: 0 12px; }
+  .container { padding: 16px; }
+  .stat-card { min-width: 100%; }
+}

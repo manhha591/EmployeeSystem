@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tổng quan — Employee Management</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <span class="brand">Employee Management</span>
+    <div class="nav-links">
+      <a href="dashboard.html" class="active">Tổng quan</a>
+      <a href="departments.html">Phòng ban</a>
+      <a href="employees.html">Nhân viên</a>
+      <a href="#" id="logoutBtn">Đăng xuất</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h2 class="page-title">Tổng quan</h2>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="label">Nhân viên</div>
+        <div class="value" id="statEmployees" style="color: #1677ff">...</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Phòng ban</div>
+        <div class="value" id="statDepartments" style="color: #52c41a">...</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Tổng lương</div>
+        <div class="value" id="statSalary" style="color: #fa8c16">...</div>
+      </div>
+    </div>
+
+    <h3 style="margin-bottom: 12px; font-size: 16px;">Nhân viên theo phòng ban</h3>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Phòng ban</th>
+            <th>Số nhân viên</th>
+            <th>Tổng lương</th>
+          </tr>
+        </thead>
+        <tbody id="deptTableBody">
+          <tr><td colspan="3" class="loading">Đang tải...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

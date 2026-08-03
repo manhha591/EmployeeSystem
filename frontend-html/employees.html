@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nhân viên — Employee Management</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <span class="brand">Employee Management</span>
+    <div class="nav-links">
+      <a href="dashboard.html">Tổng quan</a>
+      <a href="departments.html">Phòng ban</a>
+      <a href="employees.html" class="active">Nhân viên</a>
+      <a href="#" id="logoutBtn">Đăng xuất</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="toolbar">
+      <div class="left">
+        <input id="searchInput" class="form-control" style="width: 220px;" placeholder="Tìm kiếm..." />
+        <select id="deptFilter" class="form-control" style="width: 180px;">
+          <option value="">Tất cả phòng ban</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="openCreateModal()">+ Thêm nhân viên</button>
+    </div>
+
+    <div id="alertBox" class="alert"></div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 60px;">ID</th>
+            <th style="width: 60px;">Ảnh</th>
+            <th>Họ tên</th>
+            <th>Email</th>
+            <th>Điện thoại</th>
+            <th>Phòng ban</th>
+            <th class="text-right">Lương</th>
+            <th style="width: 160px;">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody id="empBody">
+          <tr><td colspan="8" class="loading">Đang tải...</td></tr>
+        </tbody>
+      </table>
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </div>
+
+  <!-- Modal Thêm / Sửa nhân viên -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <h3 id="modalTitle">Thêm nhân viên</h3>
+      <div class="form-group">
+        <label for="fullName">Họ tên</label>
+        <input id="fullName" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input id="email" type="email" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label for="phone">Điện thoại</label>
+        <input id="phone" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label for="salary">Lương (VND)</label>
+        <input id="salary" type="number" min="0" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label for="deptSelect">Phòng ban</label>
+        <select id="deptSelect" class="form-control"></select>
+      </div>
+      <div class="form-group">
+        <label for="avatarFile">Ảnh đại diện</label>
+        <input id="avatarFile" type="file" accept="image/*" class="form-control" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeModal()">Hủy</button>
+        <button class="btn btn-primary" id="saveBtn">Lưu</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/employees.js"></script>
+</body>
+</html>

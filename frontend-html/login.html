@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng nhập — Employee Management</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="login-wrapper">
+    <div class="login-box">
+      <h2>Đăng nhập</h2>
+
+      <div id="loginError" class="login-error"></div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Tên đăng nhập</label>
+          <input id="username" name="username" class="form-control" placeholder="admin" autocomplete="username" />
+        </div>
+        <div class="form-group">
+          <label for="password">Mật khẩu</label>
+          <input id="password" name="password" type="password" class="form-control" placeholder="••••••" autocomplete="current-password" />
+        </div>
+        <button type="submit" id="loginBtn" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
+          Đăng nhập
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>

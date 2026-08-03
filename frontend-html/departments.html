@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phòng ban — Employee Management</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <span class="brand">Employee Management</span>
+    <div class="nav-links">
+      <a href="dashboard.html">Tổng quan</a>
+      <a href="departments.html" class="active">Phòng ban</a>
+      <a href="employees.html">Nhân viên</a>
+      <a href="#" id="logoutBtn">Đăng xuất</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="toolbar">
+      <div class="left">
+        <h2 class="page-title" style="margin-bottom: 0;">Phòng ban</h2>
+      </div>
+      <button class="btn btn-primary" onclick="openCreateModal()">+ Thêm phòng ban</button>
+    </div>
+
+    <div id="alertBox" class="alert"></div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 60px;">ID</th>
+            <th>Tên phòng ban</th>
+            <th style="width: 160px;">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody id="deptBody">
+          <tr><td colspan="3" class="loading">Đang tải...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal Thêm / Sửa phòng ban -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <h3 id="modalTitle">Thêm phòng ban</h3>
+      <div class="form-group">
+        <label for="deptName">Tên phòng ban</label>
+        <input id="deptName" class="form-control" placeholder="VD: IT, HR, ..." />
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeModal()">Hủy</button>
+        <button class="btn btn-primary" id="saveBtn">Lưu</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/departments.js"></script>
+</body>
+</html>
