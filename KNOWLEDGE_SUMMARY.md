@@ -398,6 +398,19 @@ push feature → CI chạy → tạo PR → CI pass mới merge main → Render 
 | `host not found in upstream "api"` | nginx.conf proxy tới host `api` không tồn tại trên Render | bỏ proxy, dùng URL API trực tiếp |
 | `VITE_API_URL` không đổi được sau build | Vite env là build-time | tạo `config.js` runtime khi container start |
 
+### 6.4 Redis Cache
+
+- **Package**: `Microsoft.Extensions.Caching.StackExchangeRedis` — `IDistributedCache` cho phép đổi backend cache mà không đổi code
+- **Cấu hình** (`Program.cs`):
+  - `Redis:ConnectionString` có giá trị → dùng Redis (`AddStackExchangeRedisCache`)
+  - Rỗng/không có → fallback `AddDistributedMemoryCache` (app vẫn chạy không cần Redis)
+- **CacheService** (`Services/CacheService.cs`): wrap `IDistributedCache` — serialize JSON, `try/catch` nuốt lỗi để Redis hỏng không làm chết request
+- **Dữ liệu cache**:
+  - `cache:departments:all` — danh sách phòng ban, TTL 5 phút; invalidate khi tạo/sửa/xóa phòng ban
+  - `cache:dashboard:stats` — thống kê dashboard, TTL 60 giây; invalidate khi thay đổi nhân viên/phòng ban
+- **docker-compose**: service `redis` (redis:7-alpine, port 6379) + env `Redis__ConnectionString=redis:6379`
+- **Deploy Render**: không có Redis managed → để trống env là tự dùng memory cache; có thể dùng Redis Cloud/Upstash (free tier) bằng cách set `Redis__ConnectionString`
+
 ---
 
 ## 7. Python Script

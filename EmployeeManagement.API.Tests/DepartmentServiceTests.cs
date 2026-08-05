@@ -10,17 +10,19 @@ namespace EmployeeManagement.API.Tests;
 public class DepartmentServiceTests
 {
     private readonly Mock<IDepartmentRepository> _repoMock;
+    private readonly Mock<ICacheService> _cacheMock;
     private readonly IMapper _mapper;
     private readonly DepartmentService _service;
 
     public DepartmentServiceTests()
     {
         _repoMock = new Mock<IDepartmentRepository>();
+        _cacheMock = new Mock<ICacheService>();
 
         var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
         _mapper = config.CreateMapper();
 
-        _service = new DepartmentService(_repoMock.Object, _mapper);
+        _service = new DepartmentService(_repoMock.Object, _mapper, _cacheMock.Object);
     }
 
     [Fact]
@@ -37,6 +39,34 @@ public class DepartmentServiceTests
 
         Assert.Equal(2, result.Count);
         Assert.Equal("IT", result[0].Name);
+    }
+
+    [Fact]
+    public async Task GetAllAsync_CacheHit_ReturnsCachedDataWithoutQueryingDb()
+    {
+        var cached = new List<DepartmentDto>
+        {
+            new() { Id = 1, Name = "Cached Dept" },
+        };
+        _cacheMock.Setup(c => c.GetAsync<List<DepartmentDto>>(It.IsAny<string>())).ReturnsAsync(cached);
+
+        var result = await _service.GetAllAsync();
+
+        Assert.Single(result);
+        Assert.Equal("Cached Dept", result[0].Name);
+        _repoMock.Verify(r => r.GetAllAsync(), Times.Never);
+    }
+
+    [Fact]
+    public async Task GetAllAsync_CacheMiss_QueriesDbAndStoresCache()
+    {
+        var departments = new List<Department> { new() { Id = 1, Name = "IT" } };
+        _repoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(departments);
+
+        var result = await _service.GetAllAsync();
+
+        Assert.Single(result);
+        _cacheMock.Verify(c => c.SetAsync(It.IsAny<string>(), It.IsAny<List<DepartmentDto>>(), It.IsAny<TimeSpan>()), Times.Once);
     }
 
     [Fact]
@@ -72,6 +102,7 @@ public class DepartmentServiceTests
 
         Assert.Equal("Finance", result.Name);
         _repoMock.Verify(r => r.CreateAsync(It.Is<Department>(d => d.Name == "Finance")), Times.Once);
+        _cacheMock.Verify(c => c.RemoveAsync(It.IsAny<string[]>()), Times.Once);
     }
 
     [Fact]

@@ -6,23 +6,34 @@ using EmployeeManagement.API.Repositories;
 namespace EmployeeManagement.API.Services;
 
 // Service layer: chứa logic nghiệp vụ, gọi Repository để thao tác DB
-// Được Inject IDepartmentRepository và IMapper qua constructor (DI)
+// Được Inject IDepartmentRepository, IMapper và ICacheService qua constructor (DI)
 public class DepartmentService : IDepartmentService
 {
+    // Key cache cho danh sách phòng ban
+    private const string DepartmentsCacheKey = "cache:departments:all";
+
     private readonly IDepartmentRepository _repo;
     private readonly IMapper _mapper;
+    private readonly ICacheService _cache;
 
-    public DepartmentService(IDepartmentRepository repo, IMapper mapper)
+    public DepartmentService(IDepartmentRepository repo, IMapper mapper, ICacheService cache)
     {
         _repo = repo;
         _mapper = mapper;
+        _cache = cache;
     }
 
-    // Lấy danh sách phòng ban, map từ Entity -> DTO trước khi trả về
+    // Lấy danh sách phòng ban: ưu tiên đọc từ cache, không có thì đọc DB rồi lưu cache
     public async Task<List<DepartmentDto>> GetAllAsync()
     {
+        var cached = await _cache.GetAsync<List<DepartmentDto>>(DepartmentsCacheKey);
+        if (cached != null)
+            return cached;
+
         var departments = await _repo.GetAllAsync();
-        return _mapper.Map<List<DepartmentDto>>(departments);
+        var result = _mapper.Map<List<DepartmentDto>>(departments);
+        await _cache.SetAsync(DepartmentsCacheKey, result, TimeSpan.FromMinutes(5));
+        return result;
     }
 
     public async Task<DepartmentDto?> GetByIdAsync(int id)
@@ -36,6 +47,7 @@ public class DepartmentService : IDepartmentService
     {
         var department = _mapper.Map<Department>(dto);
         var created = await _repo.CreateAsync(department);
+        await _cache.RemoveAsync(DepartmentsCacheKey, DashboardService.DashboardCacheKey);
         return _mapper.Map<DepartmentDto>(created);
     }
 
@@ -44,11 +56,13 @@ public class DepartmentService : IDepartmentService
     {
         var department = _mapper.Map<Department>(dto);
         await _repo.UpdateAsync(department);
+        await _cache.RemoveAsync(DepartmentsCacheKey, DashboardService.DashboardCacheKey);
     }
 
     // Xóa phòng ban theo Id
     public async Task DeleteAsync(int id)
     {
         await _repo.DeleteAsync(id);
+        await _cache.RemoveAsync(DepartmentsCacheKey, DashboardService.DashboardCacheKey);
     }
 }

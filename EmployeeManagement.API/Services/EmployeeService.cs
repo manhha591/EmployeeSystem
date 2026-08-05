@@ -10,12 +10,14 @@ public class EmployeeService : IEmployeeService
     private readonly IEmployeeRepository _repo;
     private readonly IMapper _mapper;
     private readonly IWebHostEnvironment _env;
+    private readonly ICacheService _cache;
 
-    public EmployeeService(IEmployeeRepository repo, IMapper mapper, IWebHostEnvironment env)
+    public EmployeeService(IEmployeeRepository repo, IMapper mapper, IWebHostEnvironment env, ICacheService cache)
     {
         _repo = repo;
         _mapper = mapper;
         _env = env;
+        _cache = cache;
     }
 
     // Lấy tất cả nhân viên (không phân trang)
@@ -54,6 +56,8 @@ public class EmployeeService : IEmployeeService
 
         var employee = _mapper.Map<Employee>(dto);
         var created = await _repo.CreateAsync(employee);
+        // Số liệu thống kê thay đổi → xóa cache dashboard
+        await _cache.RemoveAsync(DashboardService.DashboardCacheKey);
         return _mapper.Map<EmployeeDto>(created);
     }
 
@@ -66,12 +70,14 @@ public class EmployeeService : IEmployeeService
 
         var employee = _mapper.Map<Employee>(dto);
         await _repo.UpdateAsync(employee);
+        await _cache.RemoveAsync(DashboardService.DashboardCacheKey);
     }
 
     // Xoá một nhân viên theo ID
     public async Task DeleteAsync(int id)
     {
         await _repo.DeleteAsync(id);
+        await _cache.RemoveAsync(DashboardService.DashboardCacheKey);
     }
 
     // Upload ảnh đại diện cho nhân viên — lưu file vào thư mục uploads/avatars và cập nhật đường dẫn vào DB

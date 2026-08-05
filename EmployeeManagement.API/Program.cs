@@ -45,6 +45,18 @@ if (connStr != null && connStr.StartsWith("postgres"))
 // Đăng ký DbContext với PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connStr));
+// Đăng ký Redis cache: nếu cấu hình Redis:ConnectionString có giá trị thì dùng Redis,
+// ngược lại dùng cache trong bộ nhớ (để app chạy được cả khi chưa có Redis)
+var redisConn = builder.Configuration["Redis:ConnectionString"];
+if (!string.IsNullOrEmpty(redisConn))
+{
+    builder.Services.AddStackExchangeRedisCache(options => options.Configuration = redisConn);
+}
+else
+{
+    builder.Services.AddDistributedMemoryCache();
+}
+builder.Services.AddSingleton<ICacheService, CacheService>();
 // Đăng ký các Repository và Service để Inject (DI)
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
